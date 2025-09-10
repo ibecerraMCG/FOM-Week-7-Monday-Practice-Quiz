@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF--8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7 Monday Practice Quiz</title>
+<style>
+/* --- Color Variables --- */
+:root {
+/* Default: Dark Theme */
+--bg-color: #2d343e; /* Dark background */
+--container-bg: #3c424f; /* Slightly lighter container */
+--text-color: #e8e6e3; /* Light text */
+--question-text-color: #8ab4f8; /* Light blue for questions */
+--lo-text-color: #b0c4de; /* Lighter blue for learning objective */
+--border-color: #555; /* Darker borders */
+--separator-color: #4a4f5a;
+--label-bg: #454c5a;
+--label-border: #6c757d;
+--label-hover-bg: #525966;
+--label-hover-border: #7a828a;
+--button-bg: #8ab4f8;
+--button-text: #202124;
+--button-hover-bg: #a3c5f9;
+--button-disabled-bg: #5f6368;
+--feedback-correct-bg: #344e41;
+--feedback-correct-text: #c7f9cc;
+--feedback-correct-border: #52b788;
+--feedback-incorrect-bg: #5e2129;
+--feedback-incorrect-text: #f8d7da;
+--feedback-incorrect-border: #a4133c;
+--feedback-rationale-text: #adb5bd; /* Lighter gray for rationale */
+--feedback-source-text: #c7d3e0;
+--feedback-separator: #6c757d;
+--radio-accent: #8ab4f8;
+}
+
+.light-theme {
+    --bg-color: #eef2f7;
+    --container-bg: #ffffff;
+    --text-color: #343a40;
+    --question-text-color: #0056b3;
+    --lo-text-color: #5a6e8a;
+    --border-color: #dee2e6;
+    --separator-color: #e9ecef;
+    --label-bg: #f8f9fa;
+    --label-border: #ced4da;
+    --label-hover-bg: #e2e6ea;
+    --label-hover-border: #adb5bd;
+    --button-bg: #007bff;
+    --button-text: white;
+    --button-hover-bg: #0056b3;
+    --button-disabled-bg: #6c757d;
+    --feedback-correct-bg: #d1e7dd;
+    --feedback-correct-text: #0f5132;
+    --feedback-correct-border: #badbcc;
+    --feedback-incorrect-bg: #f8d7da;
+    --feedback-incorrect-text: #842029;
+    --feedback-incorrect-border: #f5c2c7;
+    --feedback-rationale-text: #495057;
+    --feedback-source-text: #343a40;
+    --feedback-separator: #ccc;
+    --radio-accent: #007bff;
+}
+
+/* --- General Styles --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.7;
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding-bottom: 40px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#theme-toggle-button {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    padding: 8px 12px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: 1px solid var(--label-border);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    z-index: 1000;
+     transition: background-color 0.3s, color 0.3s;
+}
+ #theme-toggle-button:hover {
+     opacity: 0.8;
+ }
+
+
+#quiz-container {
+    max-width: 900px;
+    margin: 80px auto 30px auto;
+    background: var(--container-bg);
+    padding: 25px 35px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.question-block {
+    margin-bottom: 35px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--separator-color);
+    transition: border-color 0.3s;
+}
+
+.question-block:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 5px;
+}
+
+.learning-objective {
+    font-size: 0.85em;
+    font-style: italic;
+    color: var(--lo-text-color);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--separator-color);
+}
+
+.question-text {
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: 18px;
+    color: var(--question-text-color);
+    transition: color 0.3s;
+}
+
+.options label {
+    display: block;
+    margin-bottom: 12px;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid var(--label-border);
+    background-color: var(--label-bg);
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.options label:hover {
+    background-color: var(--label-hover-bg);
+    border-color: var(--label-hover-border);
+}
+
+.options input[type="radio"]:checked+span {
+     font-weight: bold;
+     color: var(--question-text-color);
+}
+.options input[type="radio"] {
+    margin-right: 12px;
+    accent-color: var(--radio-accent);
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.check-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background-color 0.2s, color 0.2s, opacity 0.2s;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+}
+
+.check-button:hover {
+    opacity: 0.85;
+}
+
+ .check-button:disabled {
+     background-color: var(--button-disabled-bg);
+     cursor: not-allowed;
+     opacity: 0.7;
+ }
+
+.feedback {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    font-size: 0.95em;
+    display: none;
+    border: 1px solid transparent;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.feedback.correct {
+    background-color: var(--feedback-correct-bg);
+    color: var(--feedback-correct-text);
+    border-color: var(--feedback-correct-border);
+    display: block;
+}
+
+.feedback.incorrect {
+    background-color: var(--feedback-incorrect-bg);
+    color: var(--feedback-incorrect-text);
+    border-color: var(--feedback-incorrect-border);
+    display: block;
+}
+
+.feedback-status {
+     font-weight: bold;
+     font-size: 1.1em;
+     display: block;
+     margin-bottom: 8px;
+}
+
+.feedback-rationale {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--feedback-separator);
+    font-size: 0.9em;
+    color: var(--feedback-rationale-text);
+    transition: color 0.3s, border-color 0.3s;
+}
+
+.feedback-source {
+    margin-top: 10px;
+    font-size: 0.85em;
+    font-style: italic;
+    color: var(--feedback-source-text);
+    background-color: rgba(0,0,0,0.1);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+h1 {
+    text-align: center;
+    color: var(--question-text-color);
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+</style>
+</head>
+<body>
+
+<button id="theme-toggle-button">Toggle Theme</button>
+<h1>Week 7 Monday Practice Quiz</h1>
+
+<div id="quiz-container">
+    <!-- Questions will be loaded here by JavaScript -->
+</div>
+
+<script>
+    const quizData = [
+    {
+        learningObjective: "LO 9.1 (Immunopathology Basics): Compare and contrast the immunologic mechanisms of IgE-mediated (Type I) hypersensitivity with those of Type II, Type III, and Type IV hypersensitivity being sure that you can recognize clinical examples of each.",
+        question: "An 8-year-old boy is brought to the emergency department after being stung by a bee. Within minutes, he develops generalized hives, facial swelling, and difficulty breathing. His blood pressure is 80/50 mm Hg. This patient's condition is mediated by which of the following immunologic mechanisms?",
+        options: {
+            A: "IgE-mediated mast cell degranulation",
+            B: "IgG and complement-mediated cell lysis",
+            C: "Deposition of antigen-antibody complexes in tissues",
+            D: "T-cell mediated cytokine release and macrophage activation"
+        },
+        correctAnswer: "A",
+        rationale: "This patient is experiencing anaphylaxis, a classic example of a Type I hypersensitivity reaction. This is an immediate reaction mediated by the cross-linking of IgE antibodies on the surface of mast cells and basophils by an allergen (bee venom), leading to massive release of histamine and other mediators. Type II is cytotoxic (e.g., drug-induced hemolysis), Type III involves immune complexes (e.g., serum sickness), and Type IV is delayed-type (e.g., contact dermatitis).",
+        source: "'Type I: IgE mediated immediate hypersensitivity – rhinitis, asthma, atopic dermatitis, anaphylaxis.' (Immunopathology Basics, Slide 5)"
+    },
+    {
+        learningObjective: "LO 9.1 (Immunopathology Basics): Compare and contrast the immunologic mechanisms of IgE-mediated (Type I) hypersensitivity with those of Type II, Type III, and Type IV hypersensitivity being sure that you can recognize clinical examples of each.",
+        question: "A 25-year-old woman with a history of strep throat treated with penicillin develops anemia, jaundice, and splenomegaly 10 days later. A direct Coombs test is positive. The hemolysis is most likely caused by which type of hypersensitivity reaction to the drug?",
+        options: {
+            A: "Type I",
+            B: "Type II",
+            C: "Type III",
+            D: "Type IV"
+        },
+        correctAnswer: "B",
+        rationale: "This is a classic presentation of drug-induced hemolytic anemia, which is a Type II cytotoxic hypersensitivity reaction. Penicillin acts as a hapten, binding to the surface of red blood cells. The body then produces IgG antibodies against the drug-cell complex, leading to complement activation and phagocytosis of the RBCs. The positive Coombs test confirms the presence of antibodies on the RBC surface.",
+        source: "'Type II: IgG (IgM) mediated cytotoxic or stimulatory/inhibitory reactions – drug-induced hemolysis.' (Immunopathology Basics, Slide 5) and 'Classic diseases: PCN hemolytic anemia...' (Immunopathology Basics, Slide 35)"
+    },
+    {
+        learningObjective: "LO 9.1 (Immunopathology Basics): Compare and contrast the immunologic mechanisms of IgE-mediated (Type I) hypersensitivity with those of Type II, Type III, and Type IV hypersensitivity being sure that you can recognize clinical examples of each.",
+        question: "A patient develops fever, rash, and painful, swollen ankle joints one week after being treated with horse-derived antivenom for a snakebite. Laboratory studies show proteinuria and decreased serum complement levels. Which of the following is the most likely immunologic mechanism responsible for these findings?",
+        options: {
+            A: "IgE-mediated immediate hypersensitivity",
+            B: "IgG-mediated cytotoxic reaction",
+            C: "IgG immune complex deposition",
+            D: "T-cell mediated delayed hypersensitivity"
+        },
+        correctAnswer: "C",
+        rationale: "This clinical scenario describes serum sickness, a classic Type III hypersensitivity reaction. It occurs when a large dose of foreign antigen (horse serum proteins) leads to the formation of antigen-antibody (immune) complexes. These complexes deposit in small blood vessels, joints, and glomeruli, activating complement and causing vasculitis, arthritis, and glomerulonephritis.",
+        source: "'Type III: IgG (IgM) immune complex reactions – serum sickness; Arthus reaction.' (Immunopathology Basics, Slide 5) and 'Clinical symptoms (rashes, glomerulonephritis, arthritis, fever) occur as Ab formed (usually takes a week).' (Immunopathology Basics, Slide 44)"
+    },
+    {
+        learningObjective: "LO 9.2 (Immunopathology Basics): Relate concepts of allergy and atopy to clinical practice.",
+        question: "A 6-year-old child has a history of severe eczema (atopic dermatitis) since infancy. He now presents with seasonal sneezing, nasal congestion, and itchy, watery eyes. His father had asthma as a child. This tendency to develop IgE-mediated hypersensitivity reactions, often with a familial pattern, is best described by which term?",
+        options: {
+            A: "Atopy",
+            B: "Anaphylaxis",
+            C: "Autoimmunity",
+            D: "Immunodeficiency"
+        },
+        correctAnswer: "A",
+        rationale: "Atopy is the genetic predisposition to develop allergic diseases, such as atopic dermatitis, allergic rhinitis, and asthma. The 'atopic march' describes the typical progression of these conditions in an individual, often starting with eczema in infancy. The term allergy refers to the specific IgE-mediated mechanism, while atopy refers to the inherited tendency to have that mechanism.",
+        source: "'The short list is: rhinitis, asthma, and atopic dermatitis. These are sometimes called ‘the atopic diseases’. They tend to be inherited together in individuals (the ‘atopic march’), and within families.' (Immunopathology Basics, Slide 14)"
+    },
+    {
+        learningObjective: "LO 9.2 (Immunopathology Basics): Relate concepts of allergy and atopy to clinical practice.",
+        question: "A patient tells his physician, 'I have terrible allergies every spring.' In clinical practice among US allergists, the term 'allergy' refers most specifically to which of the following?",
+        options: {
+            A: "Any adverse reaction to a substance",
+            B: "Any condition involving eosinophils",
+            C: "A Type IV delayed hypersensitivity reaction",
+            D: "An IgE-mediated immediate hypersensitivity reaction"
+        },
+        correctAnswer: "D",
+        rationale: "While 'allergy' is used broadly in lay terms, among most US allergists it refers specifically to the disease mechanism of IgE-dependent Type I immediate hypersensitivity. This is the mechanism underlying conditions like allergic rhinitis ('hay fever'), allergic asthma, and anaphylaxis. Other definitions are used by the lay public or other specialists, creating potential for semantic confusion.",
+        source: "'Most US allergists: IgE-mediated immediate hypersensitivity.' (Immunopathology Basics, Slide 11) and ''Allergy' is a very specific disease mechanism: IgE-dependent Type I immediate hypersensitivity, not a disease and not a diagnosis.' (Immunopathology Basics, Slide 12)"
+    },
+    {
+        learningObjective: "LO 9.2 (Immunopathology Basics): Relate concepts of allergy and atopy to clinical practice.",
+        question: "A patient is diagnosed with asthma. Her symptoms are triggered by exposure to cat dander, but also by non-immunologic stimuli such as cold air and exercise. Which statement best describes the classification of her disease?",
+        options: {
+            A: "Only the reactions to cat dander are part of her asthma.",
+            B: "Asthma is considered an 'allergic disease' regardless of whether the trigger involves IgE.",
+            C: "Her reaction to cold air is a Type IV hypersensitivity.",
+            D: "She cannot have true asthma if non-allergic triggers are present."
+        },
+        correctAnswer: "B",
+        rationale: "Certain diseases like rhinitis, asthma, and atopic dermatitis are broadly termed 'the allergic diseases.' This is because an allergic (Type I, IgE-mediated) mechanism is a common trigger. However, symptoms of these diseases can also be triggered by other immunologic or non-immunologic mechanisms. The classification as an 'allergic disease' remains, for better or worse, even when IgE is not involved in a particular exacerbation.",
+        source: "'For better or worse, these are called the ‘allergic diseases’ whether or not IgE is involved.' (Immunopathology Basics, Slide 14)"
+    },
+    {
+        learningObjective: "LO 9.3 (Immunopathology Basics): Describe the sequence of immunologic events that lead to mast cell activation and mediator release...",
+        question: "A 22-year-old woman with a known peanut allergy accidentally ingests a food containing peanut protein. What is the initial molecular event on the surface of her mast cells that triggers the release of histamine and other inflammatory mediators?",
+        options: {
+            A: "Direct binding of peanut antigen to T-cell receptors on the mast cell",
+            B: "Binding of IgG antibodies to the mast cell Fc receptor",
+            C: "Cross-linking of multiple IgE antibodies by the peanut antigen",
+            D: "Activation of complement, leading to C3a and C5a binding"
+        },
+        correctAnswer: "C",
+        rationale: "The central event in Type I hypersensitivity is the activation of mast cells that have been previously sensitized. This occurs when an allergen (peanut protein) binds to and cross-links two or more IgE molecules that are already bound to the high-affinity IgE receptor (FcεRI) on the mast cell surface. This aggregation of receptors initiates the intracellular signaling cascade that leads to degranulation.",
+        source: "'The FcεRI high-affinity IgE receptor is found on: 1) mast cells... Cross-linking of IgE causes receptors to aggregate and activate.' (Immunopathology Basics, Slide 17)"
+    },
+    {
+        learningObjective: "LO 9.3 (Immunopathology Basics): Describe the sequence of immunologic events that lead to mast cell activation and mediator release...",
+        question: "Following an anaphylactic reaction, a physician orders a blood test to confirm that mast cell activation occurred. Which of the following mediators is a clinically useful biomarker for mast cell activation because it is specific to mast cells and not released by basophils?",
+        options: {
+            A: "Histamine",
+            B: "Leukotriene C4",
+            C: "Tryptase",
+            D: "IgE"
+        },
+        correctAnswer: "C",
+        rationale: "Tryptase is an enzyme that is stored in and released from mast cell granules during activation. Basophils, which also degranulate in allergic reactions, release histamine but not tryptase. Therefore, measuring serum tryptase levels is a specific and clinically useful way to confirm that a systemic mast cell activation event, such as anaphylaxis, has occurred.",
+        source: "'Tryptase: clinically useful biomarker of mast cell activation (basophils don’t have tryptase).' (Immunopathology Basics, Slide 18)"
+    },
+    {
+        learningObjective: "LO 9.3 (Immunopathology Basics): Describe the sequence of immunologic events that lead to mast cell activation and mediator release...",
+        question: "During an allergic reaction, the activation of mast cells leads to the release of preformed mediators and the synthesis of new mediators. Which of the following is an immediate consequence of this activation?",
+        options: {
+            A: "Recruitment and activation of eosinophils",
+            B: "Amplification of IgE responses",
+            C: "Release of histamine and leukotrienes",
+            D: "Chronic inflammation of tissues"
+        },
+        correctAnswer: "C",
+        rationale: "Mast cell activation triggers a sequence of events. The most immediate is the degranulation and release of preformed mediators like histamine, which cause immediate symptoms (e.g., vasodilation, bronchoconstriction). This is followed by the rapid synthesis and release of lipid mediators like leukotrienes. The recruitment of other cells like eosinophils and the amplification of IgE responses are part of the subsequent late-phase reaction.",
+        source: "'Release of histamine, leukotrienes, cytokines etc. – Immediate symptoms – Recruitment, activation of eosinophils – (Amplification of IgE responses).' (Immunopathology Basics, Slide 18)"
+    },
+    {
+        learningObjective: "LO 9.4 (Immunopathology Basics): Recognize mediators released by mast cells, basophils, and eosinophils upon activation, and describe their effects, including the early and late phase reactions.",
+        question: "A patient with allergic rhinitis experiences itching, sneezing, and increased vascular permeability causing nasal congestion within minutes of exposure to pollen. These early phase symptoms are primarily caused by which preformed mediator released from mast cells?",
+        options: {
+            A: "Leukotriene C4",
+            B: "Histamine",
+            C: "IL-5",
+            D: "Platelet-activating factor"
+        },
+        correctAnswer: "B",
+        rationale: "Histamine is a preformed mediator stored in mast cell granules. Upon release, it acts on H1 receptors to cause itching, sneezing, smooth muscle contraction (bronchospasm), and increased vascular permeability, which are the classic symptoms of the early phase of a Type I reaction.",
+        source: "'Toxic mediator: Histamine, heparin. Biological effects: ...Increase vascular permeability, Cause smooth muscle contraction.' (Immunopathology Basics, Slide 21) and 'Via H1 and H4 receptors, histamine accounts for most symptoms of asthma, rhinitis - H1: Itching, sneezing, dripping - H1: Increased vascular permeability.' (Immunopathology Basics, Slide 22)"
+    },
+    {
+        learningObjective: "LO 9.4 (Immunopathology Basics): Recognize mediators released by mast cells, basophils, and eosinophils upon activation, and describe their effects, including the early and late phase reactions.",
+        question: "Approximately 6-8 hours after an initial allergic asthmatic response, a patient experiences a second, more sustained phase of bronchoconstriction and inflammation. This late phase reaction is largely driven by which of the following newly synthesized mediators?",
+        options: {
+            A: "Histamine and tryptase",
+            B: "Leukotrienes and cytokines",
+            C: "Bradykinin and complement",
+            D: "IgG and IgM"
+        },
+        correctAnswer: "B",
+        rationale: "The late phase reaction is driven by mediators that are synthesized and released by mast cells and other recruited inflammatory cells (like eosinophils) after the initial activation. Key among these are lipid mediators like leukotrienes (which are potent bronchoconstrictors) and cytokines (like IL-4, IL-5, and TNF-α) which recruit and activate other inflammatory cells, sustaining the inflammatory response.",
+        source: "The diagram on slide 21 of 'Immunopathology Basics' clearly separates 'Preformed in mast cell granule' (Histamine, Tryptase) from mediators 'Synthesized after MC activation' (Cytokines, Leukotrienes, Platelet-activating factor)."
+    },
+    {
+        learningObjective: "LO 9.4 (Immunopathology Basics): Recognize mediators released by mast cells, basophils, and eosinophils upon activation, and describe their effects, including the early and late phase reactions.",
+        question: "A biopsy from a patient with chronic allergic asthma shows a significant infiltration of eosinophils. Which cytokine, produced by mast cells and Th2 lymphocytes, is primarily responsible for promoting eosinophil production and activation?",
+        options: {
+            A: "TNF-α",
+            B: "CCL3",
+            C: "IL-3, IL-5, GM-CSF",
+            D: "IL-4, IL-13"
+        },
+        correctAnswer: "C",
+        rationale: "IL-5 is the most potent and specific cytokine for eosinophil differentiation, recruitment, activation, and survival. IL-3 and GM-CSF also contribute to their production and activation. These cytokines are synthesized by mast cells and Th2 cells following allergic stimulation and are key drivers of eosinophilic inflammation.",
+        source: "'Cytokine: IL-3, IL-5, GM-CSF. Biological effects: Promote eosinophil production and activation.' (Immunopathology Basics, Slide 21)"
+    },
+    {
+        learningObjective: "LO 9.5 (Immunopathology Basics): Relate therapeutic interventions for allergic, autoimmune, and other inflammatory diseases to the immunologic mechanisms that drive these diseases.",
+        question: "A patient with severe persistent allergic asthma that is not well-controlled on inhaled corticosteroids has elevated serum IgE levels. A monoclonal antibody therapy is initiated. This therapy works by binding to the Fc portion of free IgE, preventing it from binding to its receptor on mast cells. Which drug works by this mechanism?",
+        options: {
+            A: "Omalizumab",
+            B: "Benralizumab",
+            C: "Montelukast",
+            D: "Tezepelumab"
+        },
+        correctAnswer: "A",
+        rationale: "Omalizumab is a monoclonal antibody specifically designed to treat allergic diseases by targeting IgE. It binds to free IgE in the circulation, preventing it from binding to the high-affinity FcεRI receptor on mast cells and basophils, thereby downregulating these receptors and preventing allergen-induced mediator release. Benralizumab targets the IL-5 receptor, montelukast blocks leukotriene receptors, and tezepelumab blocks TSLP.",
+        source: "'Specific monoclonal antibodies (e.g., omalizumab, benralizumab, tezapilumab).' (Immunopathology Basics, Slide 53)"
+    },
+    {
+        learningObjective: "LO 9.5 (Immunopathology Basics): Relate therapeutic interventions for allergic, autoimmune, and other inflammatory diseases to the immunologic mechanisms that drive these diseases.",
+        question: "A patient with asthma frequently experiences symptoms after taking aspirin. This reaction is known to be caused by shunting of arachidonic acid metabolism towards the production of cysteinyl leukotrienes. Which of the following medications directly antagonizes the receptor for these mediators?",
+        options: {
+            A: "Diphenhydramine",
+            B: "Albuterol",
+            C: "Montelukast",
+            D: "Fluticasone"
+        },
+        correctAnswer: "C",
+        rationale: "Aspirin-exacerbated respiratory disease involves the overproduction of leukotrienes, which are potent bronchoconstrictors and inflammatory mediators. Montelukast is a leukotriene receptor antagonist that specifically blocks the CysLT1 receptor, thereby preventing the effects of these mediators. Diphenhydramine is an antihistamine, albuterol is a beta-agonist, and fluticasone is a corticosteroid.",
+        source: "'Antileukotrienes = specific CysLT1 receptor antagonists widely used clinically.' (Immunopathology Basics, Slide 24) and 'Mediator-specific agents... -Leukotriene receptor antagonists.' (Immunopathology Basics, Slide 53)"
+    },
+    {
+        learningObjective: "LO 9.5 (Immunopathology Basics): Relate therapeutic interventions for allergic, autoimmune, and other inflammatory diseases to the immunologic mechanisms that drive these diseases.",
+        question: "A patient with Crohn's disease, an inflammatory bowel disease, is treated with infliximab. This therapeutic monoclonal antibody works by neutralizing the activity of which pro-inflammatory cytokine?",
+        options: {
+            A: "Interleukin-2 (IL-2)",
+            B: "Interferon-gamma (IFN-γ)",
+            C: "Tumor necrosis factor-alpha (TNF-α)",
+            D: "Interleukin-10 (IL-10)"
+        },
+        correctAnswer: "C",
+        rationale: "Infliximab is a chimeric monoclonal antibody that binds to and neutralizes TNF-α. TNF-α is a key cytokine that drives inflammation in several autoimmune and inflammatory conditions, including Crohn's disease and rheumatoid arthritis. By blocking TNF-α, infliximab reduces the inflammatory cascade.",
+        source: "'Infliximab (REMICADE)... Humanized antibodies that recognize TNFα... Mechanism: Blocks TNFα from binding receptor leads to suppression of inflammatory cytokines (IL-1, IL-6) and adhesion molecules.' (Immunosuppressants, Slide 32)"
+    },
+    {
+        learningObjective: "LO 1 (Immunosuppressants): Describe the mechanisms by which compounds in the four 'classes' of immunosuppressants attenuate the immune response.",
+        question: "A 45-year-old man who received a kidney transplant is prescribed cyclosporine to prevent organ rejection. This drug exerts its immunosuppressive effect by binding to an immunophilin (cyclophilin), and this complex then inhibits calcineurin. The inhibition of calcineurin ultimately prevents which of the following events in T-cell activation?",
+        options: {
+            A: "Activation of the mTOR pathway",
+            B: "Dephosphorylation and nuclear translocation of NF-AT",
+            C: "Incorporation of fraudulent nucleotides into DNA",
+            D: "Cross-linking of DNA strands"
+        },
+        correctAnswer: "B",
+        rationale: "Calcineurin is a calcium-activated phosphatase that dephosphorylates the Nuclear Factor of Activated T-cells (NF-AT). This dephosphorylation is required for NF-AT to translocate to the nucleus and activate the transcription of the IL-2 gene. By inhibiting calcineurin, cyclosporine prevents IL-2 production, which is critical for T-cell proliferation.",
+        source: "'Mechanism of Cyclosporine (CsA) & Tacrolimus (FK506) action' diagram shows CsA inhibiting Calcineurin (CaN), which prevents the dephosphorylation of NF-ATc. (Immunosuppressants, Slide 13)"
+    },
+    {
+        learningObjective: "LO 1 (Immunosuppressants): Describe the mechanisms by which compounds in the four 'classes' of immunosuppressants attenuate the immune response.",
+        question: "A patient with systemic lupus erythematosus is treated with mycophenolate mofetil. This drug selectively inhibits the proliferation of lymphocytes by blocking an enzyme that is critical for the de novo synthesis of purines. Which enzyme is the direct target of mycophenolate mofetil?",
+        options: {
+            A: "Dihydrofolate reductase",
+            B: "Calcineurin",
+            C: "Inosine monophosphate dehydrogenase",
+            D: "Thiopurine methyltransferase (TPMT)"
+        },
+        correctAnswer: "C",
+        rationale: "Mycophenolate mofetil inhibits inosine monophosphate dehydrogenase, a key enzyme in the de novo pathway of guanine nucleotide synthesis. Lymphocytes are particularly dependent on this pathway for proliferation, making this drug a relatively selective antiproliferative agent for T and B cells.",
+        source: "'Mechanism of Mycophenolate mofetil action' diagram shows the drug inhibiting 'Inosine monophosphate dehydrogenase'. (Immunosuppressants, Slide 19) and 'Inhibits inosine monophosphate dehydrogenase. ↓cell cycle of activated lymphocytes.' (Immunosuppressants, Slide 35)"
+    },
+    {
+        learningObjective: "LO 1 (Immunosuppressants): Describe the mechanisms by which compounds in the four 'classes' of immunosuppressants attenuate the immune response.",
+        question: "A patient is prescribed prednisone for an autoimmune condition. The primary immunosuppressive and anti-inflammatory effects of glucocorticoids are mediated by which molecular mechanism within target cells?",
+        options: {
+            A: "Inhibition of the calcineurin pathway",
+            B: "Blockade of the IL-2 receptor",
+            C: "Transrepression of pro-inflammatory transcription factors like NF-κB",
+            D: "Alkylation of DNA leading to lymphocyte apoptosis"
+        },
+        correctAnswer: "C",
+        rationale: "Glucocorticoids bind to a cytoplasmic receptor, which then translocates to the nucleus. The complex then binds to DNA. The key anti-inflammatory action is transrepression, where the glucocorticoid receptor complex interferes with the function of pro-inflammatory transcription factors like NF-κB and AP-1, leading to less synthesis of pro-inflammatory cytokines. This is distinct from transactivation, which is associated more with metabolic and adverse effects.",
+        source: "'Transrepression... Less synthesis of proinflammatory cytokines ---Associated with pharmacological effects.' (Immunosuppressants, Slide 7)"
+    },
+    {
+        learningObjective: "LO 2 (Immunosuppressants): Know the clinical uses (with regard to immunosuppression).",
+        question: "A 50-year-old woman is diagnosed with rheumatoid arthritis. After failing to respond adequately to methotrexate, her physician adds etanercept to her regimen. The addition of this biologic agent is intended to treat which type of underlying disease process?",
+        options: {
+            A: "Acute organ transplant rejection",
+            B: "Graft-versus-host disease",
+            C: "An autoimmune disorder",
+            D: "Iatrogenic Cushing's syndrome"
+        },
+        correctAnswer: "C",
+        rationale: "Etanercept is a TNF-α inhibitor. This class of drugs is primarily used to treat autoimmune and inflammatory disorders such as rheumatoid arthritis, psoriasis, and inflammatory bowel disease. While other immunosuppressants are used for transplantation, the main indication for TNF blockers is autoimmunity.",
+        source: "'Etanercept (ENBREL)... Clinical use: rheumatoid arthritis (adult, psoriatic, and polyarticular course juvenile)...' (Immunosuppressants, Slide 30) and 'Antiproliferative and Antimetabolic Drugs Clinical use: ...Autoimmune disorders (systemic lupus erythematosus, multiple sclerosis, hemolytic anemia, rheumatoid arthritis).' (Immunosuppressants, Slide 17)"
+    },
+    {
+        learningObjective: "LO 2 (Immunosuppressants): Know the clinical uses (with regard to immunosuppression).",
+        question: "A patient who has received a hematopoietic stem cell transplant develops a severe rash, diarrhea, and liver dysfunction. This condition, known as graft-versus-host disease (GVHD), is a major complication of this procedure. Which class of drugs is considered first-line therapy for treating established GVHD?",
+        options: {
+            A: "High-dose glucocorticoids",
+            B: "Antimetabolic agents",
+            C: "Polyclonal antibodies",
+            D: "TNF-α blockers"
+        },
+        correctAnswer: "A",
+        rationale: "High-dose systemic glucocorticoids, such as prednisone, are the cornerstone and first-line therapy for treating both acute organ rejection and established graft-versus-host disease. They provide potent, broad-spectrum immunosuppression and anti-inflammatory effects.",
+        source: "'Glucocorticoids Clinical use: • first line immunosuppressive therapy for both solid organ and hematopoetic stem cell transplant recipients • organ rejection or graft-v-host disease (high doses prednisone (4mg/kg/d)).' (Immunosuppressants, Slide 8)"
+    },
+    {
+        learningObjective: "LO 2 (Immunosuppressants): Know the clinical uses (with regard to immunosuppression).",
+        question: "Muromonab-CD3 (OKT3) is a murine monoclonal antibody that was historically used in transplantation. What was its primary clinical indication?",
+        options: {
+            A: "Induction of immunosuppression before transplantation",
+            B: "Treatment of autoimmune disorders like rheumatoid arthritis",
+            C: "Treatment of acute allograft rejection, particularly steroid-resistant rejection",
+            D: "Prevention of hemolytic disease of the newborn"
+        },
+        correctAnswer: "C",
+        rationale: "Muromonab-CD3 is a potent T-cell depleting agent that targets the CD3 complex on T cells. Its main clinical use was for the treatment of acute organ transplant rejection, especially cases that were resistant to high-dose steroid therapy.",
+        source: "'Muromonab-CD3 (OKT3)... Clinical use: Treatment of acute allograft rejection & steroid resistant rejection.' (Immunosuppressants, Slide 27)"
+    },
+    {
+        learningObjective: "LO 3 (Immunosuppressants): Know the major side effects of immunosuppressants.",
+        question: "A 60-year-old man who received a kidney transplant 5 years ago has been on a stable regimen including tacrolimus. At his annual check-up, his blood pressure is 150/95 mm Hg, and his serum creatinine is elevated. Which of the following is the most significant dose-limiting adverse effect of tacrolimus and other calcineurin inhibitors?",
+        options: {
+            A: "Bone marrow suppression",
+            B: "Nephrotoxicity",
+            C: "Cytokine release syndrome",
+            D: "Iatrogenic Cushing's syndrome"
+        },
+        correctAnswer: "B",
+        rationale: "Nephrotoxicity (renal dysfunction) is a major, common, and dose-limiting side effect of calcineurin inhibitors like cyclosporine and tacrolimus. It can manifest as acute, reversible renal vasoconstriction or chronic, irreversible interstitial fibrosis and tubular atrophy. Hypertension is also a very common side effect.",
+        source: "'Cyclosporine and Tacrolimus Side effects: • Nephrotoxicity (renal dysfunction)... • Hypertension.' (Immunosuppressants, Slide 14)"
+    },
+    {
+        learningObjective: "LO 3 (Immunosuppressants): Know the major side effects of immunosuppressants.",
+        question: "A patient on long-term therapy with high-dose prednisone for systemic lupus erythematosus presents with a compression fracture of a vertebra. This complication is most likely related to which adverse effect of chronic glucocorticoid use?",
+        options: {
+            A: "Avascular necrosis",
+            B: "Myopathy",
+            C: "Osteoporosis",
+            D: "Hyperglycemia"
+        },
+        correctAnswer: "C",
+        rationale: "Chronic glucocorticoid use is a major cause of secondary osteoporosis. Glucocorticoids decrease bone formation and increase bone resorption, leading to a loss of bone mass and increased risk of fractures, particularly in the vertebrae. Avascular necrosis is also a risk but osteoporosis is the more direct cause of compression fractures.",
+        source: "'Glucocorticoids Side effects: ...avascular/aseptic necrosis of bone (osteonecrosis); osteopenia; osteoporosis (loss of Ca2+).' (Immunosuppressants, Slide 10) and 'iatrogenic Cushing's syndrome... Osteoporosis.' (Immunosuppressants, Slide 9)"
+    },
+    {
+        learningObjective: "LO 3 (Immunosuppressants): Know the major side effects of immunosuppressants.",
+        question: "A patient is being treated with azathioprine for an autoimmune condition. Which of the following is a major adverse effect common to azathioprine, methotrexate, and mycophenolate mofetil?",
+        options: {
+            A: "Hypertension",
+            B: "Nephrotoxicity",
+            C: "Bone marrow suppression",
+            D: "Neurotoxicity"
+        },
+        correctAnswer: "C",
+        rationale: "Antiproliferative and antimetabolic drugs work by interfering with the cell cycle and synthesis of DNA, which disproportionately affects rapidly dividing cells. This makes bone marrow suppression (leading to leukopenia, anemia, and thrombocytopenia) a common and significant side effect for this entire class of drugs.",
+        source: "'Antiproliferative and Antimetabolic Drugs Side effects: • Hematologic: bone marrow suppression.' (Immunosuppressants, Slide 17)"
+    }
+];
+
+    const quizContainer = document.getElementById('quiz-container');
+    const themeToggleButton = document.getElementById('theme-toggle-button');
+    const bodyElement = document.body;
+
+    function applyTheme(theme) {
+        if (theme === 'light') {
+            bodyElement.classList.add('light-theme');
+            themeToggleButton.textContent = 'Switch to Dark Mode';
+        } else {
+            bodyElement.classList.remove('light-theme');
+            themeToggleButton.textContent = 'Switch to Light Mode';
+        }
+        localStorage.setItem('quizTheme', theme);
+    }
+
+    function loadQuiz() {
+        quizData.forEach((qData, index) => {
+            const questionBlock = document.createElement('div');
+            questionBlock.classList.add('question-block');
+            questionBlock.id = `q${index}`;
+
+            const loText = document.createElement('div');
+            loText.classList.add('learning-objective');
+            loText.textContent = qData.learningObjective;
+            questionBlock.appendChild(loText);
+
+            const questionText = document.createElement('p');
+            questionText.classList.add('question-text');
+            questionText.innerHTML = `${index + 1}. ${qData.question}`;
+            questionBlock.appendChild(questionText);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.classList.add('options');
+
+            for (const optionKey in qData.options) {
+                const optionId = `q${index}_${optionKey}`;
+                const label = document.createElement('label');
+                label.htmlFor = optionId;
+                const radioInput = document.createElement('input');
+                radioInput.type = 'radio';
+                radioInput.name = `q${index}`;
+                radioInput.value = optionKey;
+                radioInput.id = optionId;
+                const labelText = document.createElement('span');
+                labelText.textContent = ` ${optionKey}. ${qData.options[optionKey]}`;
+                label.appendChild(radioInput);
+                label.appendChild(labelText);
+                optionsDiv.appendChild(label);
+            }
+            questionBlock.appendChild(optionsDiv);
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.classList.add('button-container');
+
+            const checkButton = document.createElement('button');
+            checkButton.textContent = 'Check Answer';
+            checkButton.classList.add('check-button');
+            checkButton.onclick = () => checkAnswer(index);
+            buttonContainer.appendChild(checkButton);
+            
+            questionBlock.appendChild(buttonContainer);
+
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.classList.add('feedback');
+            questionBlock.appendChild(feedbackDiv);
+
+            quizContainer.appendChild(questionBlock);
+        });
+    }
+
+    function checkAnswer(questionIndex) {
+        const questionBlockElement = document.getElementById(`q${questionIndex}`);
+        const selectedRadioButton = questionBlockElement.querySelector('input[type="radio"]:checked');
+
+        if (!selectedRadioButton) {
+            alert("Please select an answer first.");
+            return;
+        }
+
+        const selectedOptionKey = selectedRadioButton.value;
+        const qData = quizData[questionIndex];
+        const feedbackDiv = questionBlockElement.querySelector('.feedback');
+        const correct = selectedOptionKey === qData.correctAnswer;
+
+        let feedbackHTML = '';
+
+        if (correct) {
+            feedbackHTML = `<span class="feedback-status">Correct!</span>`;
+            feedbackDiv.className = 'feedback correct';
+        } else {
+             feedbackHTML = `<span class="feedback-status">Incorrect. The correct answer is ${qData.correctAnswer}.</span>`;
+            feedbackDiv.className = 'feedback incorrect';
+        }
+
+        feedbackHTML += `<div class="feedback-rationale"><strong>Rationale:</strong> ${qData.rationale}</div>`;
+        feedbackHTML += `<div class="feedback-source">${qData.source}</div>`;
+        feedbackDiv.innerHTML = feedbackHTML;
+    }
+
+    themeToggleButton.addEventListener('click', () => {
+        if (bodyElement.classList.contains('light-theme')) {
+            applyTheme('dark');
+        } else {
+            applyTheme('light');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+        applyTheme(savedTheme);
+        loadQuiz();
+    });
+
+</script>
+</body>
+</html>
